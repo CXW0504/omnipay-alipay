@@ -18,7 +18,7 @@ Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply
 ```json
 {
     "require": {
-        "lokielse/omnipay-alipay": "dev-master"
+        "lonestone/omnipay-alipay": "dev-master"
     }
 }
 ```
@@ -39,6 +39,11 @@ The following gateways are provided by this package:
 * Alipay_WapExpress (Alipay Wap Express Checkout) 支付宝WAP客户端接口
 * Alipay_MobileExpress (Alipay Mobile Express Checkout) 支付宝无线支付接口
 * Alipay_Bank (Alipay Bank Checkout) 支付宝网银快捷接口
+
+基于lokielse的工作，增加了以下接口
+
+* Alipay_BatchTrans  (Alipay Express Checkout) 支付宝批量转账到支付宝账户接口
+* Alipay_RefundExpress  (Alipay Express Checkout) 支付宝即时退款接口
 
 ## Usage
 
@@ -99,12 +104,67 @@ if ($response->isPaid()) {
 }
 ```
 
+### 批量付款到支付宝账户
+```php
+$gateway    = Omnipay::create('Alipay_BatchTransGateway');
+$gateway->setPartner('8888666622221111');
+$gateway->setKey('your**key**here');
+$gateway->setSellerEmail('merchant@example.com');
+$gateway->setNotifyUrl('http://www.example.com/notify');
+
+$detail_data = '流水号1^收款方账号1^收款账号姓名1^付款金额1^备注说明1|流水号2^收款方账号2^收款账号姓名2^付款金额2^备注说明2......';
+
+$params = [
+    'email'=>'merchant@example.com',
+    'account_name'=>'merchant.name',
+    'detail_data'=>$detail_data,
+    'batch_no'=>$batch_no,//批号
+    'batch_num'=>$batch_num,//笔数
+    'batch_fee'=>$batch_fee,//总金额
+    'pay_date'=>$pay_date,//付款日期
+];
+$response = $gateway->purchase($params)->send();
+
+$redirect_url = $response->getRedirectUrl();
+```
+### 即时退款接口
+该接口需要联系支付宝商服提前申请
+```php
+$gateway    = Omnipay::create('Alipay_RefundExpressGateway');
+$gateway->setPartner('8888666622221111');
+$gateway->setKey('your**key**here');
+$gateway->setSellerEmail('merchant@example.com');
+$gateway->setSignType('MD5');
+$gateway->setInputCharset('UTF-8');
+$gateway->setNotifyUrl('http://www.example.com/notify');
+
+$data    = array(
+    'refund_date' => date('Y-m-d H:i:s',time()),
+    'batch_no'=>'1234567890',//退款编号
+    'batch_num' => 1,//退款笔数
+    'detail_data'=> mb_convert_encoding($this->alipay_trade_no.'^'.$amount.'^客户取消订单','GBK'),//退款数据，一次可以发起一批退款
+);
+
+$response = $gateway->refund($data)->send();
+$debugData = $response->getData();
+
+Yii::info('支付宝退款数据：'.print_r($debugData, true), 'payment');
+
+if ($response->isSuccessful()) {
+    //退款处理成功
+}
+
+```
+上面的notify使用方法类似，具体可以参考支付宝文档，不再赘述。
+
+
 
 For general usage instructions, please see the main [Omnipay](https://github.com/omnipay/omnipay)
 repository.
 
 ## Related
 
+- [Omnipay-Alipay](https://github.com/lokielse/omnipay-alipay)
 - [Laravel-Omnipay](https://github.com/ignited/laravel-omnipay)
 - [Omnipay-GlobalAlipay](https://github.com/lokielse/omnipay-global-alipay)
 - [Omnipay-WechatPay](https://github.com/lokielse/omnipay-wechatpay)
