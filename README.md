@@ -18,7 +18,7 @@ Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply
 ```json
 {
     "require": {
-        "lonestone/omnipay-alipay": "dev-master"
+        "lonestonewy/omnipay-alipay": "dev-master"
     }
 }
 ```
