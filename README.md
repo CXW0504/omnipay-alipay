@@ -1,6 +1,6 @@
 # Omnipay: Alipay
 
-**Alipay driver for the Omnipay PHP payment processing library**
+**增加了批量付款到支付宝账户和即时到帐批量退款接口**
 
 [![Build Status](https://travis-ci.org/lokielse/omnipay-alipay.png?branch=master)](https://travis-ci.org/lokielse/omnipay-alipay)
 [![Latest Stable Version](https://poser.pugx.org/lokielse/omnipay-alipay/version.png)](https://packagist.org/packages/lokielse/omnipay-alipay)
