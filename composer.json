@@ -1,7 +1,7 @@
 {
   "name": "lonestonewy/omnipay-alipay",
   "type": "library",
-  "description": "Alipay gateway for Omnipay payment processing library",
+  "description": "增加了批量付款到支付宝账户和即时到帐批量退款接口的Omnipay支付宝接口",
   "keywords": [
     "alipay",
     "gateway",
